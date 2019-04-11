@@ -27,11 +27,11 @@ class Blockchain():
         :return: <None> appends the transaction to current_txns list
         """
         txn = {
-               "Sender": sender,
-               "Receiver": receiver,
-               "Amount": amount,
-               "Timestamp": time.time()
-              }
+            "Sender": sender,
+            "Receiver": receiver,
+            "Amount": amount,
+            "Timestamp": time.time()
+        }
 
         self.current_txns.append(txn)
 
@@ -41,21 +41,21 @@ class Blockchain():
 
         :return: <None> adds bock to internal blockchain
         """
-        prev_hash = '000' if len(self.blockchain) < 1
-                    else self.blockchain[-1]["Current_Hash"]
+        prev_hash = ('000' if len(self.blockchain) < 1
+                     else self.blockchain[-1]["Current_Hash"])
         data = self.current_txns
         data_hash = self.get_hash(data)
 
         nonce, current_hash = self.find_valid_hash(prev_hash, data_hash)
 
         block = {
-                 "Timestamp": time.time(),
-                 "Prev_Hash": prev_hash,
-                 "Transactions": data,
-                 "Data_Hash": data_hash,
-                 "Nonce": nonce,
-                 "Current_Hash": current_hash
-                }
+            "Timestamp": time.time(),
+            "Prev_Hash": prev_hash,
+            "Transactions": data,
+            "Data_Hash": data_hash,
+            "Nonce": nonce,
+            "Current_Hash": current_hash
+        }
 
         self.current_txns = []
         self.blockchain.append(block)
