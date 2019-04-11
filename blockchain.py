@@ -57,24 +57,6 @@ class Blockchain():
         self.current_txns = []
         self.blockchain.append(block)
 
-    # def generate_hash(self, txn):
-    #     """
-    #     Generates hash starting with 3 0's based on txn
-    #         transaction
-    #     :param txn: dict with keys for Sender, Receiver,
-    #         Amount, and Previous_Hash
-    #     :return: nonce (random number to meet hash requirements), hash
-    #     """
-    #     nonce = 0
-    #     while True:
-    #         txn["Nonce"] = nonce
-    #         h = json.dumps(txn, sort_keys=True).encode()
-    #         hashy = hashlib.sha224(h).hexdigest()
-    #         if hashy[:3] == "000":
-    #             break
-    #         nonce += 1
-    #     return nonce, hashy
-
     def find_valid_hash(self, prev_hash, data_hash):
         """
         Finds the nonce and a hash starting with 3 0's when the previous hash,
