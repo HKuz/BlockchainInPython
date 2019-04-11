@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 import hashlib
+import json
 import random
 
 
@@ -16,6 +17,11 @@ class Blockchain():
     def add_transaction(self, sender, receiver, amount):
         """
         Creates a new transaction object
+
+        :param sender: string, person sending funds
+        :param receiver: string, person receiving funds
+        :param amount: number, amount of funds transferred
+        :return: None, updates internal transactions and hashes lists
         """
         prev_hash = self.hashes[-1] if len(self.hashes) >= 1 else "0" * 56
         txn = {"Sender": sender,
@@ -24,12 +30,16 @@ class Blockchain():
                "Prev_Hash": prev_hash}
 
         # TODO: generate hash for current transaction
+        nonce, new_hash = self.generate_hash(txn)
 
-        return txn
+        txn["Nonce"] = nonce
+        txn["Hash"] = new_hash
+        self.hashes.append(new_hash)
+        self.transactions.append(txn)
 
     def generate_hash(self, txn):
         """
-        Generates appropriate hash (one starting with 3 0's) for given
+        Generates hash starting with 3 0's based on txn
             transaction
         :param txn: dict with keys for Sender, Receiver,
             Amount, and Previous_Hash
@@ -38,8 +48,8 @@ class Blockchain():
         while True:
             nonce = random.randint(0, 10**10)
             txn["Nonce"] = nonce
-            h = hashlib.sha224(bytes(txn))
-            hashy = h.hexdigest()
+            h = json.dumps(txn, sort_keys=True).encode()
+            hashy = hashlib.sha224(h).hexdigest()
             if hashy[:3] == "000":
                 break
         return nonce, hashy
