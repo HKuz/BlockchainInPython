@@ -11,11 +11,11 @@ class Blockchain():
     """
 
     def __init__(self):
-        self.hashes = []
         self.current_txns = []
         self.blockchain = []
 
-        # TODO: create 1st block
+        # Create first block in the chain
+        self.create_block()
 
     def new_transaction(self, sender, receiver, amount):
         """
@@ -24,12 +24,14 @@ class Blockchain():
         :param sender: <str> account sending funds
         :param receiver: <str> account receiving funds
         :param amount: <int> or <float> amount of funds transferred
-        :return: None, appends the transaction to current_txns list
+        :return: <None> appends the transaction to current_txns list
         """
-        txn = {"Sender": sender,
+        txn = {
+               "Sender": sender,
                "Receiver": receiver,
                "Amount": amount,
-               "Timestamp": time.time()}
+               "Timestamp": time.time()
+              }
 
         self.current_txns.append(txn)
 
@@ -39,7 +41,8 @@ class Blockchain():
 
         :return: <None> adds bock to internal blockchain
         """
-        prev_hash = self.blockchain[-1]["Current_Hash"]
+        prev_hash = '000' if len(self.blockchain) < 1
+                    else self.blockchain[-1]["Current_Hash"]
         data = self.current_txns
         data_hash = self.get_hash(data)
 
