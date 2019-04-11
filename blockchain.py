@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-import random
+import time
 
 
 class Blockchain():
@@ -12,30 +12,44 @@ class Blockchain():
 
     def __init__(self):
         self.hashes = []
-        self.transactions = []
+        self.current_txns = []
+        self.blockchain = []
 
-    def add_transaction(self, sender, receiver, amount):
+        # TODO: create 1st block
+
+    def new_transaction(self, sender, receiver, amount):
         """
-        Creates a new transaction object
+        Creates a new transaction that goes into the block queue
 
-        :param sender: string, person sending funds
-        :param receiver: string, person receiving funds
-        :param amount: number, amount of funds transferred
-        :return: None, updates internal transactions and hashes lists
+        :param sender: <str> account sending funds
+        :param receiver: <str> account receiving funds
+        :param amount: <int> or <float> amount of funds transferred
+        :return: None, appends the transaction to current_txns list
         """
         prev_hash = self.hashes[-1] if len(self.hashes) >= 1 else "0" * 56
         txn = {"Sender": sender,
                "Receiver": receiver,
                "Amount": amount,
+               "Timestamp": time.time(),
                "Prev_Hash": prev_hash}
 
-        # TODO: generate hash for current transaction
+        self.current_txns.append(txn)
+
+    def create_block(self):
+        """
+        Initiates the verification process
+
+        :param sender: <str>, person sending funds
+        :param receiver: <str>, person receiving funds
+        :param amount: <int> or <float>, amount of funds transferred
+        :return: block
+        """
+        # TODO: fix logic to use get_hash and current_txns list
         nonce, new_hash = self.generate_hash(txn)
 
         txn["Nonce"] = nonce
         txn["Hash"] = new_hash
-        self.hashes.append(new_hash)
-        self.transactions.append(txn)
+        pass
 
     def generate_hash(self, txn):
         """
@@ -45,14 +59,19 @@ class Blockchain():
             Amount, and Previous_Hash
         :return: nonce (random number to meet hash requirements), hash
         """
+        nonce = 0
         while True:
-            nonce = random.randint(0, 10**10)
             txn["Nonce"] = nonce
             h = json.dumps(txn, sort_keys=True).encode()
             hashy = hashlib.sha224(h).hexdigest()
             if hashy[:3] == "000":
                 break
+            nonce += 1
         return nonce, hashy
+
+    def get_hash(self, data, algo='sha224'):
+        # TODO: Write function to return hashlib hexdigest for given data
+        pass
 
 
 def main():
