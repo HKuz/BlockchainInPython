@@ -37,7 +37,7 @@ class Blockchain():
 
     def create_block(self):
         """
-        Initiates the verification process
+        Adds current transactions into the blockchain
 
         :param sender: <str>, person sending funds
         :param receiver: <str>, person receiving funds
@@ -69,9 +69,15 @@ class Blockchain():
             nonce += 1
         return nonce, hashy
 
-    def get_hash(self, data, algo='sha224'):
-        # TODO: Write function to return hashlib hexdigest for given data
-        pass
+    def get_hash(self, data):
+        """
+        Generates a SHA-224 hash for the given data
+
+        :param data: a block or transaction
+        :return: hash for given data
+        """
+        data_string = json.dumps(data, sort_keys=True).encode()
+        return hashlib.sha224(data_string).hexdigest()
 
 
 def main():
