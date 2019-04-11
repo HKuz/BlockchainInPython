@@ -39,45 +39,61 @@ class Blockchain():
         """
         Adds current transactions into the blockchain
 
-        :param sender: <str>, person sending funds
-        :param receiver: <str>, person receiving funds
-        :param amount: <int> or <float>, amount of funds transferred
-        :return: block
+        :return: <None> adds bock to internal blockchain
         """
         # TODO: fix logic to use get_hash and current_txns list
         nonce, new_hash = self.generate_hash(txn)
 
         txn["Nonce"] = nonce
         txn["Hash"] = new_hash
-        pass
 
-    def generate_hash(self, txn):
+    # def generate_hash(self, txn):
+    #     """
+    #     Generates hash starting with 3 0's based on txn
+    #         transaction
+    #     :param txn: dict with keys for Sender, Receiver,
+    #         Amount, and Previous_Hash
+    #     :return: nonce (random number to meet hash requirements), hash
+    #     """
+    #     nonce = 0
+    #     while True:
+    #         txn["Nonce"] = nonce
+    #         h = json.dumps(txn, sort_keys=True).encode()
+    #         hashy = hashlib.sha224(h).hexdigest()
+    #         if hashy[:3] == "000":
+    #             break
+    #         nonce += 1
+    #     return nonce, hashy
+
+    def find_valid_hash(self, prev_hash, data_hash):
         """
-        Generates hash starting with 3 0's based on txn
-            transaction
-        :param txn: dict with keys for Sender, Receiver,
-            Amount, and Previous_Hash
-        :return: nonce (random number to meet hash requirements), hash
+        Finds the nonce and a hash starting with 3 0's when the previous hash,
+            the data hash, and the nonce are hashed together
+
+        :param prev_hash: <str> hash for previous block
+        :param data_hash: <str> hash for transaction data going into current
+            block
+        :return: <tuple> nonce, current hash
         """
         nonce = 0
         while True:
-            txn["Nonce"] = nonce
-            h = json.dumps(txn, sort_keys=True).encode()
-            hashy = hashlib.sha224(h).hexdigest()
-            if hashy[:3] == "000":
+            guess = f'{prev_hash}{data_hash}{nonce}'.encode()
+            h = hashlib.sha256(guess).hexdigest()
+            if h[:3] == "000":
                 break
             nonce += 1
-        return nonce, hashy
+
+        return nonce, h
 
     def get_hash(self, data):
         """
-        Generates a SHA-224 hash for the given data
+        Generates a SHA-256 hash for the given data
 
         :param data: a block or transaction
         :return: hash for given data
         """
         data_string = json.dumps(data, sort_keys=True).encode()
-        return hashlib.sha224(data_string).hexdigest()
+        return hashlib.sha256(data_string).hexdigest()
 
 
 def main():
