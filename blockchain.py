@@ -26,26 +26,36 @@ class Blockchain():
         :param amount: <int> or <float> amount of funds transferred
         :return: None, appends the transaction to current_txns list
         """
-        prev_hash = self.hashes[-1] if len(self.hashes) >= 1 else "0" * 56
         txn = {"Sender": sender,
                "Receiver": receiver,
                "Amount": amount,
-               "Timestamp": time.time(),
-               "Prev_Hash": prev_hash}
+               "Timestamp": time.time()}
 
         self.current_txns.append(txn)
 
     def create_block(self):
         """
-        Adds current transactions into the blockchain
+        Creates a block for current transactions and adds into the blockchain
 
         :return: <None> adds bock to internal blockchain
         """
-        # TODO: fix logic to use get_hash and current_txns list
-        nonce, new_hash = self.generate_hash(txn)
+        prev_hash = self.blockchain[-1]["Current_Hash"]
+        data = self.current_txns
+        data_hash = self.get_hash(data)
 
-        txn["Nonce"] = nonce
-        txn["Hash"] = new_hash
+        nonce, current_hash = self.find_valid_hash(prev_hash, data_hash)
+
+        block = {
+                 "Timestamp": time.time(),
+                 "Prev_Hash": prev_hash,
+                 "Transactions": data,
+                 "Data_Hash": data_hash,
+                 "Nonce": nonce,
+                 "Current_Hash": current_hash
+                }
+
+        self.current_txns = []
+        self.blockchain.append(block)
 
     # def generate_hash(self, txn):
     #     """
