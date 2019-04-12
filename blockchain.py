@@ -7,7 +7,7 @@ import time
 
 class Blockchain():
     """
-    Constructs and manipulates a simple blockchain object
+    Constructs a simple blockchain object
     """
 
     def __init__(self):
