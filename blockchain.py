@@ -41,12 +41,12 @@ class Blockchain():
 
         :return: <None> adds bock to internal blockchain
         """
-        prev_hash = ('000' if len(self.blockchain) < 1
+        prev_hash = ('0' * 64 if len(self.blockchain) < 1
                      else self.blockchain[-1]["Current_Hash"])
         data = self.current_txns
         data_hash = self.get_hash(data)
 
-        nonce, current_hash = self.find_valid_hash(prev_hash, data_hash)
+        nonce, current_hash = self.mine_block(prev_hash, data_hash)
 
         block = {
             "Timestamp": time.time(),
@@ -60,7 +60,7 @@ class Blockchain():
         self.current_txns = []
         self.blockchain.append(block)
 
-    def find_valid_hash(self, prev_hash, data_hash):
+    def mine_block(self, prev_hash, data_hash):
         """
         Finds the nonce and a hash starting with 3 0's when the previous hash,
             the data hash, and the nonce are hashed together
@@ -92,7 +92,20 @@ class Blockchain():
 
 
 def main():
-    pass
+    # Test blockchain
+    blockchain = Blockchain()
+    print('Gene sends Heather 10')
+    blockchain.new_transaction("Gene", "Heather", 10)
+    print(f'Current transactions: {blockchain.current_txns}')
+    print(f'Blockchain: {blockchain.blockchain}')
+    print('Heather sends Jeff 5')
+    blockchain.new_transaction("Heather", "Jeff", 5)
+    print(f'Current transactions: {blockchain.current_txns}')
+    print(f'Blockchain: {blockchain.blockchain}')
+    print('Creating a block...')
+    blockchain.create_block()
+    print(f'Current transactions: {blockchain.current_txns}')
+    print(f'Blockchain: {blockchain.blockchain}')
 
 
 if __name__ == '__main__':
